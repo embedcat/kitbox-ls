@@ -3,5 +3,5 @@ from django.urls import path
 from logserver.views import TestView
 
 urlpatterns = [
-    path('', TestView.as_view(), name='main'),
+    path('api/v0/', TestView.as_view(), name='log'),
 ]
