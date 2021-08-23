@@ -21,7 +21,7 @@ def append_log(id: int, data, start_new_file:bool = False) -> None:
         f.write(data)
 
 
-def get_id_dirs(id=None) -> list[str]:
+def get_id_dirs(id=None) -> list:
     if id is None:
         path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR)
     else:
