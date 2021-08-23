@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 class MsgSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    start = serializers.BooleanField(required=False)
+    start = serializers.BooleanField(required=False, default=False)
     data = serializers.CharField(allow_blank=True)
 
     def create(self, validated_data):
