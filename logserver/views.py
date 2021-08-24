@@ -65,3 +65,26 @@ class TestView(APIView):
             if s.data['data']:
                 services.append_log(id=s.data['id'], data=s.data['data'], start_new_file=s.data['start'])
         return Response(status=status.HTTP_200_OK)
+
+
+class APILog(APIView):
+    @staticmethod
+    def get(request, id, start):
+        return Response(status=status.HTTP_200_OK)
+
+    @staticmethod
+    def post(request, id, start):
+        s = MsgSerializer(data=request.data)
+        logger.info(f"[POST] request data id={id}, start={start}: {request.data}")
+        f = request.FILES['file']
+
+        with open('name.txt', 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+
+        if s.is_valid():
+            if start == 1:
+                services.create_logs_dir(id=id)
+            if s.data['data']:
+                services.append_log(id=id, data=s.data['data'], start_new_file=(start == 1))
+        return Response(status=status.HTTP_200_OK)
