@@ -1,12 +1,17 @@
+import logging
 import os
 
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from config import settings
 from logserver.serializers import MsgSerializer
 from logserver import services
 from django import views
+
+logger = logging.getLogger(settings.LOGGER)
 
 
 class BrowserView(views.View):
@@ -53,6 +58,7 @@ class TestView(APIView):
         s = MsgSerializer(data=request.data)
         print(s.is_valid())
         print(s.data)
+        logger.info(f"[POST] request data: {request.data}")
         if s.is_valid():
             if s.data['start']:
                 services.create_logs_dir(id=s.data['id'])
