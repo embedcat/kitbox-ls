@@ -21,6 +21,7 @@ def append_log(id: int, file_obj, start_new_file:bool = False) -> bool:
     path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id))
     try:
         files = [f.path for f in os.scandir(path) if not f.is_dir()]
+        files.sort(key=os.path.getctime)
     except FileNotFoundError as e:
         logger.error(f"[SERVICES] append_log() exception: {e}")
         return False
