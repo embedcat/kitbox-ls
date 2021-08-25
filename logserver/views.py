@@ -29,7 +29,7 @@ class BrowserView(views.View):
 class BrowserIdView(views.View):
     @staticmethod
     def get(request, id):
-        dir_list = services.get_id_dirs(id)
+        dir_list = services.get_list_of_logs(id=id)
         return render(
                 request=request,
                 template_name='logserver/browser_id.html',

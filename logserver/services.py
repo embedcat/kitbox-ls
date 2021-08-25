@@ -42,6 +42,13 @@ def get_id_dirs(id=None) -> list:
     return list_subfolders_with_paths
 
 
+def get_list_of_logs(id:int) -> list:
+    path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id))
+    files = [f for f in os.scandir(path) if not f.is_dir()]
+    files.sort(key=os.path.getctime, reverse=True)
+    return [{"name": f.name, "size": os.stat(f).st_size} for f in files]
+
+
 def download_file_response(id:int, file:str) -> HttpResponse:
     path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id), str(file))
     if os.path.exists(path):
