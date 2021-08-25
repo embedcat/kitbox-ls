@@ -1,8 +1,13 @@
+import logging
+
 from django.http import HttpResponse
 
 from config import settings
 from datetime import datetime
 import os
+
+
+logger = logging.getLogger(settings.LOGGER)
 
 
 def create_logs_dir(id: int) -> None:
@@ -12,13 +17,19 @@ def create_logs_dir(id: int) -> None:
     _create_dir(dir=dir)
 
 
-def append_log(id: int, data, start_new_file:bool = False) -> None:
+def append_log(id: int, file_obj, start_new_file:bool = False) -> bool:
     path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id))
-    files = [f.path for f in os.scandir(path) if not f.is_dir()]
+    try:
+        files = [f.path for f in os.scandir(path) if not f.is_dir()]
+    except FileNotFoundError as e:
+        logger.error(f"[SERVICES] append_log() exception: {e}")
+        return False
     file = files[-1] if len(files) > 0 and start_new_file is False else os.path.join(path, f"log_{datetime.today().strftime('%Y-%m-%d-%H%M%S')}.log")
-    print(file)
-    with open(file, 'a') as f:
-        f.write(data)
+    logger.info(f"[SERVICES] append_log({id},{file_obj},{start_new_file}) into {file}")
+    with open(file, 'ab') as destination:
+        for chunk in file_obj.chunks():
+            destination.write(chunk)
+    return True
 
 
 def get_id_dirs(id=None) -> list:
@@ -40,6 +51,6 @@ def download_file_response(id:int, file:str) -> HttpResponse:
 
 
 def _create_dir(dir: str) -> None:
-    print(dir)
     if not os.path.exists(dir):
         os.mkdir(dir)
+        logger.info(f"[SERVICES] _create_dir({dir})")
