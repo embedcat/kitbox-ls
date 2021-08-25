@@ -53,7 +53,7 @@ def download_file_response(id:int, file:str) -> HttpResponse:
     path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id), str(file))
     if os.path.exists(path):
         with open(path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response = HttpResponse(fh.read(), content_type="text/plain")
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(path)
             return response
 
