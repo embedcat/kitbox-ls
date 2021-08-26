@@ -53,11 +53,18 @@ class APILog(APIView):
 
     @staticmethod
     def post(request, id, start):
+        # start: 0 - new, 1 - continue, 2 - finalize
         logger.info(f"[URL]: {request.get_full_path()} | POST request data: {request.data}")
-        if 'file' not in request.FILES:
+        if 'file' not in request.FILES and start != 2:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        if start == 1:
+        if start == 2:
+            services.finalize_log(id=id)
+            return Response(status=status.HTTP_200_OK)
+
+        if start == 0:
             services.create_logs_dir(id=id)
-        result = services.append_log(id=id, file_obj=request.FILES['file'], start_new_file=(start == 1))
+            services.create_log_file(id=id)
+        result = services.append_log(id=id, file_obj=request.FILES['file'])
+
         return Response(status=status.HTTP_200_OK) if result else Response(status=status.HTTP_406_NOT_ACCEPTABLE)
