@@ -34,6 +34,7 @@ class LogsView(views.View):
                 last_ping = kitbox.last_ping
             except KitBox.DoesNotExist:
                 last_log = ""
+                last_ping = ""
             items.append(dict(id=d, size=size, last_log=last_log, last_ping=last_ping))
         return render(
                 request=request,
