@@ -31,9 +31,10 @@ class LogsView(views.View):
             try:
                 kitbox = KitBox.objects.get(modem_id=int(d))
                 last_log = kitbox.last_log
+                last_ping = kitbox.last_ping
             except KitBox.DoesNotExist:
                 last_log = ""
-            items.append(dict(id=d, size=size, last_log=last_log))
+            items.append(dict(id=d, size=size, last_log=last_log, last_ping=last_ping))
         return render(
                 request=request,
                 template_name='logserver/logs.html',

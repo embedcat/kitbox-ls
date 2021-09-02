@@ -3,16 +3,17 @@
 {% block container %}
 <h4>Logs</h4>
 <table class="table table-sm table-striped table-bordered"
-               data-toggle="table"
-               data-sort-name="no"
-               data-sortable="true"
-               id="dataTable" width="100%">
+       data-toggle="table"
+       data-sort-name="no"
+       data-sortable="true"
+       id="dataTable" width="100%">
     <thead class="table-dark">
     <tr>
         <th data-field="no" style="width:1%">#</th>
         <th data-field="name" data-sortable="true">KitBox</th>
         <th data-field="num" data-sortable="true">Num of logs</th>
-        <th data-field="last" data-sortable="true">Last log</th>
+        <th data-field="last-log" data-sortable="true">Last log</th>
+        <th data-field="last-ping" data-sortable="true">Last ping</th>
     </tr>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@
         <td><a href="{% url 'logs_id' item.id %}"> {{ item.id }} </a></td>
         <td>{{ item.size }}</td>
         <td>{{ item.last_log }}</td>
+        <td>{{ item.last_ping }}</td>
     </tr>
     {% endfor %}
     </tbody>
