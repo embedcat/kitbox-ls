@@ -1,12 +1,28 @@
 {% extends 'logserver/base.html' %}
 
 {% block container %}
-<div>
-    <ul>
-        {% for item in items %}
-        <li>KitBox #{{ item.modem_id }} | Last ping: {{ item.last_ping }}</li>
-        {% endfor %}
-    </ul>
-</div>
+<h4>Last ping</h4>
+<table class="table table-sm table-striped table-bordered"
+               data-toggle="table"
+               data-sort-name="num"
+               data-sortable="true"
+               id="dataTable" width="100%">
+    <thead class="table-dark">
+    <tr>
+        <th data-field="num" data-sortable="true" style="width:5%">#</th>
+        <th data-field="name" data-sortable="true">KitBox</th>
+        <th data-field="ping" data-sortable="true">Last ping</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><a href="{% url 'logs_id' item.modem_id %}">{{ item.modem_id }}</a></td>
+        <td>{{ item.last_ping }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
