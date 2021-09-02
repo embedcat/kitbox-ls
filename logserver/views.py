@@ -1,7 +1,6 @@
 import logging
-import os
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,29 +9,37 @@ from config import settings
 from logserver import services
 from django import views
 
+from logserver.models import KitBox
+
 logger = logging.getLogger(settings.LOGGER)
 
 
-class BrowserView(views.View):
+class MainView(views.View):
+    @staticmethod
+    def get(request):
+        return redirect('logs')
+
+
+class LogsView(views.View):
     @staticmethod
     def get(request):
         dir_list = services.get_id_dirs()
         return render(
                 request=request,
-                template_name='logserver/browser.html',
+                template_name='logserver/logs.html',
                 context={
                     'items': dir_list,
                 }
             )
 
 
-class BrowserIdView(views.View):
+class LogsIdView(views.View):
     @staticmethod
     def get(request, id):
         dir_list = services.get_list_of_logs(id=id)
         return render(
                 request=request,
-                template_name='logserver/browser_id.html',
+                template_name='logserver/logs_id.html',
                 context={
                     'id': id,
                     'items': dir_list,
@@ -40,10 +47,23 @@ class BrowserIdView(views.View):
             )
 
 
-class BrowserDownloadFile(views.View):
+class LogsDownload(views.View):
     @staticmethod
     def get(request, id, file):
         return services.download_file_response(id, file)
+
+
+class PingView(views.View):
+    @staticmethod
+    def get(request):
+        kits = KitBox.objects.all()
+        return render(
+                request=request,
+                template_name='logserver/ping.html',
+                context={
+                    'items': kits,
+                }
+            )
 
 
 class APILog(APIView):
@@ -68,3 +88,15 @@ class APILog(APIView):
         result = services.append_log(id=id, file_obj=request.FILES['file'])
 
         return Response(status=status.HTTP_200_OK) if result else Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class APIPing(APIView):
+    @staticmethod
+    def get(request, id):
+        return Response(status=status.HTTP_200_OK)
+
+    @staticmethod
+    def post(request, id):
+        kitbox, created = KitBox.objects.get_or_create(modem_id=id, defaults={'modem_id': id})
+        kitbox.save()
+        return Response(status=status.HTTP_200_OK)

@@ -1,0 +1,12 @@
+{% extends 'logserver/base.html' %}
+
+{% block container %}
+<div>
+    <ul>
+        {% for item in items %}
+        <li>KitBox #{{ item.modem_id }} | Last ping: {{ item.last_ping }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

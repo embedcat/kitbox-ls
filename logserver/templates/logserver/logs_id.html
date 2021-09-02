@@ -1,0 +1,12 @@
+{% extends 'logserver/base.html' %}
+
+{% block container %}
+<div>
+    <ul>
+        {% for item in items %}
+        <li><a href="{% url 'logs_download' id item.name %}"> {{ item.name }}</a> | {{ item.size }} b</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
