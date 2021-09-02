@@ -57,15 +57,17 @@ def get_id_dirs(id=None) -> list:
         path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR)
     else:
         path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id))
-    list_subfolders_with_paths = [os.path.split(f.path)[-1] for f in os.scandir(path)]
-    return list_subfolders_with_paths
+    entries = [os.path.split(f.path)[-1] for f in os.scandir(path)]
+    return entries
 
 
 def get_list_of_logs(id: int) -> list:
     path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id))
+    if not os.path.exists(path=path):
+        return []
     files = [f for f in os.scandir(path) if not f.is_dir()]
     files.sort(key=os.path.getctime, reverse=True)
-    return [{"name": f.name, "size": os.stat(f).st_size} for f in files]
+    return [{"name": f.name, "size": os.stat(f).st_size, "mtime": datetime.fromtimestamp(os.stat(f).st_mtime)} for f in files]
 
 
 def download_file_response(id: int, file: str) -> HttpResponse:

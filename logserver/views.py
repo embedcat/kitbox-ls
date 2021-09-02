@@ -1,6 +1,7 @@
 import logging
 
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,11 +25,20 @@ class LogsView(views.View):
     @staticmethod
     def get(request):
         dir_list = services.get_id_dirs()
+        items = []
+        for d in dir_list:
+            size = len(services.get_list_of_logs(id=int(d)))
+            try:
+                kitbox = KitBox.objects.get(modem_id=int(d))
+                last_log = kitbox.last_log
+            except KitBox.DoesNotExist:
+                last_log = ""
+            items.append(dict(id=d, size=size, last_log=last_log))
         return render(
                 request=request,
                 template_name='logserver/logs.html',
                 context={
-                    'items': dir_list,
+                    'items': items,
                 }
             )
 
@@ -83,6 +93,9 @@ class APILog(APIView):
             return Response(status=status.HTTP_200_OK)
 
         if start == 0:
+            kitbox, created = KitBox.objects.get_or_create(modem_id=id, defaults={'modem_id': id})
+            kitbox.last_log = timezone.now()
+            kitbox.save()
             services.create_logs_dir(id=id)
             services.create_log_file(id=id)
         result = services.append_log(id=id, file_obj=request.FILES['file'])
