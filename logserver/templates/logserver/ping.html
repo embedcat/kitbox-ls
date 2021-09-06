@@ -19,7 +19,7 @@
     <tr>
         <td>{{ forloop.counter }}</td>
         <td><a href="{% url 'logs_id' item.modem_id %}">{{ item.modem_id }}</a></td>
-        <td>{{ item.last_ping }}</td>
+        <td>{{ item.last_ping|date:'H:i j-M-Y' }}</td>
     </tr>
     {% endfor %}
     </tbody>
