@@ -115,3 +115,14 @@ class APIPing(APIView):
         kitbox, created = KitBox.objects.get_or_create(modem_id=id, defaults={'modem_id': id})
         kitbox.save()
         return Response(status=status.HTTP_200_OK)
+
+
+class APIServer(APIView):
+    @staticmethod
+    def get(request):
+        return Response(status=status.HTTP_200_OK)
+
+    @staticmethod
+    def post(request):
+        logger.info(f"[URL]: {request.get_full_path()} | request data: {request.data}")
+        return Response(status=status.HTTP_200_OK)
