@@ -71,6 +71,7 @@ class LogParseAndDownload(views.View):
         parsed = services.parse_log(id, file)
         if parsed is not None:
             return services.download_file_response(id, parsed)
+        return redirect("logs_id", id)
 
 
 class PingView(views.View):
