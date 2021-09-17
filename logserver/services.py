@@ -58,8 +58,9 @@ def get_id_dirs(id=None) -> list:
         path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR)
     else:
         path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id))
-    entries = [os.path.split(f.path)[-1] for f in os.scandir(path)]
-    return entries
+    if not os.path.exists(path=path):
+        return []
+    return [os.path.split(f.path)[-1] for f in os.scandir(path)]
 
 
 def get_list_of_logs(id: int) -> list:
