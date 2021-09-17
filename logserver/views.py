@@ -65,6 +65,14 @@ class LogsDownload(views.View):
         return services.download_file_response(id, file)
 
 
+class LogParseAndDownload(views.View):
+    @staticmethod
+    def get(request, id, file):
+        parsed = services.parse_log(id, file)
+        if parsed is not None:
+            return services.download_file_response(id, parsed)
+
+
 class PingView(views.View):
     @staticmethod
     def get(request):

@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from config import settings
 from datetime import datetime
 import os
+from logserver.tlv_parser import parse_tlv_log
 
 
 logger = logging.getLogger(settings.LOGGER)
@@ -65,7 +66,7 @@ def get_list_of_logs(id: int) -> list:
     path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id))
     if not os.path.exists(path=path):
         return []
-    files = [f for f in os.scandir(path) if not f.is_dir()]
+    files = [f for f in os.scandir(path) if (not f.is_dir() and "parsed" not in f.name)]
     files.sort(key=os.path.getctime, reverse=True)
     return [{"name": f.name, "size": os.stat(f).st_size, "mtime": datetime.fromtimestamp(os.stat(f).st_mtime)} for f in files]
 
@@ -77,6 +78,16 @@ def download_file_response(id: int, file: str) -> HttpResponse:
             response = HttpResponse(fh.read(), content_type="text/plain")
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(path)
             return response
+
+
+def parse_log(id: int, file: str) -> str or None:
+    path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id), str(file))
+    if "-----" in path:
+        return None
+    if_parsed = path[:-4] + "_parsed.log"
+    if os.path.exists(if_parsed):
+        return if_parsed
+    return parse_tlv_log(path)
 
 
 def _create_dir(dir: str) -> None:
