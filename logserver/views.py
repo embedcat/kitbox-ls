@@ -145,6 +145,18 @@ class APIPing(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class APITestSmall(APIView):
+    @staticmethod
+    def get(request):
+        return Response({i: '1234567890_'*10 for i in range(5)}, status=status.HTTP_200_OK)
+
+
+class APITestBig(APIView):
+    @staticmethod
+    def get(request):
+        return Response({i: '1234567890_'*10 for i in range(15)}, status=status.HTTP_200_OK)
+
+
 class APIServer(APIView):
     @staticmethod
     def get(request):
