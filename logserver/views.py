@@ -2,7 +2,7 @@ import logging
 
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.utils.datetime_safe import datetime
+from datetime import datetime, timedelta
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -92,16 +92,14 @@ class PingStatView(views.View):
     @staticmethod
     def get(request):
         pings_all = KitBox.objects.count()
+        pings_week = [KitBox.objects.filter(last_ping__date=datetime.now() - timedelta(days=i)).count() for i in range(7)]
 
-        today_min = datetime.combine(timezone.now().date(), datetime.today().time().min)
-        today_max = datetime.combine(timezone.now().date(), datetime.today().time().max)
-        pings_today = KitBox.objects.filter(last_ping__range=(today_min, today_max)).count()
         return render(
                 request=request,
                 template_name='logserver/ping_stat.html',
                 context={
                     'pings_all': pings_all,
-                    'pings_today': pings_today,
+                    'pings_week': pings_week,
                 }
             )
 
