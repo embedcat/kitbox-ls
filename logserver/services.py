@@ -95,3 +95,18 @@ def _create_dir(dir: str) -> None:
     if not os.path.exists(dir):
         os.mkdir(dir)
         logger.info(f"[SERVICES] _create_dir({dir})")
+
+
+POS_TEST_LOG_FILENAME = 'pos_test/pos_test.log'
+
+
+def pos_append_log(msg: str) -> None:
+    with open(POS_TEST_LOG_FILENAME, 'a' if os.path.exists(POS_TEST_LOG_FILENAME) else 'w') as log:
+        log.write(f'[{datetime.now()}] {msg}\n')
+
+
+def pos_get_log_lines() -> list:
+    logs = []
+    with open(POS_TEST_LOG_FILENAME) as log:
+        logs = log.readlines()
+    return logs

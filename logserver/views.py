@@ -1,4 +1,5 @@
 import logging
+import os
 
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -164,3 +165,27 @@ class APIServer(APIView):
     def post(request):
         logger.info(f"[URL]: {request.get_full_path()} | request data: {request.data}")
         return Response(status=status.HTTP_200_OK)
+
+
+class APIPosTest(APIView):
+    @staticmethod
+    def get(request):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @staticmethod
+    def post(request):
+        services.pos_append_log(request.data)
+
+        return Response(status=status.HTTP_200_OK)
+
+
+class PosTestView(views.View):
+    @staticmethod
+    def get(request):
+        return render(
+                request=request,
+                template_name='logserver/pos_test.html',
+                context={
+                    'items': services.pos_get_log_lines(),
+                }
+            )

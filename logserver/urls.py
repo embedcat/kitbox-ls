@@ -1,7 +1,7 @@
 from django.urls import path
 
 from logserver.views import LogsView, LogsIdView, LogsDownload, APILog, APIPing, PingView, MainView, APIServer, \
-    LogParseAndDownload, PingStatView, APITestSmall, APITestBig
+    LogParseAndDownload, PingStatView, APITestSmall, APITestBig, APIPosTest, PosTestView
 
 urlpatterns = [
     path('', MainView.as_view(), name='main'),
@@ -11,6 +11,7 @@ urlpatterns = [
     path('logs/<int:id>/parse/<str:file>', LogParseAndDownload.as_view(), name='logs_parse'),
     path('ping/', PingView.as_view(), name='ping'),
     path('ping/stat/', PingStatView.as_view(), name='ping_stat'),
+    path('pos_test/', PosTestView.as_view(), name='pos_test'),
 
     path('api/v0/<int:id>/<int:start>/', APILog.as_view(), name='api_log'),
     path('api/v0/<int:id>/ping/', APIPing.as_view(), name='api_ping'),
@@ -18,5 +19,7 @@ urlpatterns = [
 
     path('api/v1/test_small', APITestSmall.as_view(), name='api_test_small'),
     path('api/v1/test_big', APITestBig.as_view(), name='api_test_big'),
+
+    path('api/v2/pos_test', APIPosTest.as_view(), name='api_pos_test'),
 
 ]
