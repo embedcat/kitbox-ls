@@ -13,6 +13,7 @@ from logserver import services
 from django import views
 
 from logserver.models import KitBox
+from logserver import mqtt
 
 logger = logging.getLogger(settings.LOGGER)
 
@@ -39,12 +40,12 @@ class LogsView(views.View):
                 last_ping = ""
             items.append(dict(id=d, size=size, last_log=last_log, last_ping=last_ping))
         return render(
-                request=request,
-                template_name='logserver/logs.html',
-                context={
-                    'items': items,
-                }
-            )
+            request=request,
+            template_name='logserver/logs.html',
+            context={
+                'items': items,
+            }
+        )
 
 
 class LogsIdView(views.View):
@@ -52,13 +53,13 @@ class LogsIdView(views.View):
     def get(request, id):
         dir_list = services.get_list_of_logs(id=id)
         return render(
-                request=request,
-                template_name='logserver/logs_id.html',
-                context={
-                    'id': id,
-                    'items': dir_list,
-                }
-            )
+            request=request,
+            template_name='logserver/logs_id.html',
+            context={
+                'id': id,
+                'items': dir_list,
+            }
+        )
 
 
 class LogsDownload(views.View):
@@ -81,28 +82,29 @@ class PingView(views.View):
     def get(request):
         kits = KitBox.objects.all()
         return render(
-                request=request,
-                template_name='logserver/ping.html',
-                context={
-                    'items': kits,
-                }
-            )
+            request=request,
+            template_name='logserver/ping.html',
+            context={
+                'items': kits,
+            }
+        )
 
 
 class PingStatView(views.View):
     @staticmethod
     def get(request):
+        # mqtt.mqtt_publish_cmd(123, cmd=mqtt.MqttCmd.publish_on)
         pings_all = KitBox.objects.count()
         pings_week = [KitBox.objects.filter(last_ping__date=datetime.now() - timedelta(days=i)).count() for i in range(7)]
 
         return render(
-                request=request,
-                template_name='logserver/ping_stat.html',
-                context={
-                    'pings_all': pings_all,
-                    'pings_week': pings_week,
-                }
-            )
+            request=request,
+            template_name='logserver/ping_stat.html',
+            context={
+                'pings_all': pings_all,
+                'pings_week': pings_week,
+            }
+        )
 
 
 class APILog(APIView):
@@ -147,13 +149,13 @@ class APIPing(APIView):
 class APITestSmall(APIView):
     @staticmethod
     def get(request):
-        return Response({i: '1234567890_'*10 for i in range(5)}, status=status.HTTP_200_OK)
+        return Response({i: '1234567890_' * 10 for i in range(5)}, status=status.HTTP_200_OK)
 
 
 class APITestBig(APIView):
     @staticmethod
     def get(request):
-        return Response({i: '1234567890_'*10 for i in range(15)}, status=status.HTTP_200_OK)
+        return Response({i: '1234567890_' * 10 for i in range(15)}, status=status.HTTP_200_OK)
 
 
 class APIServer(APIView):
@@ -174,7 +176,7 @@ class APIPosTest(APIView):
 
     @staticmethod
     def post(request):
-        services.pos_append_log(request.data)
+        services.pos_append_log(str(request.data))
 
         return Response(status=status.HTTP_200_OK)
 
@@ -183,9 +185,9 @@ class PosTestView(views.View):
     @staticmethod
     def get(request):
         return render(
-                request=request,
-                template_name='logserver/pos_test.html',
-                context={
-                    'items': services.pos_get_log_lines(),
-                }
-            )
+            request=request,
+            template_name='logserver/pos_test.html',
+            context={
+                'items': services.pos_get_log_lines(),
+            }
+        )

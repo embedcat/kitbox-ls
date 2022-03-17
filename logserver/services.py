@@ -101,8 +101,8 @@ POS_TEST_LOG_FILENAME = 'pos_test/pos_test.log'
 
 
 def pos_append_log(msg: str) -> None:
-    with open(POS_TEST_LOG_FILENAME, 'a' if os.path.exists(POS_TEST_LOG_FILENAME) else 'w') as log:
-        log.write(f'[{datetime.now()}] {msg}\n')
+    with open(POS_TEST_LOG_FILENAME, 'a' if os.path.exists(POS_TEST_LOG_FILENAME) else 'w', encoding="utf-8") as log:
+        log.write(f'[{datetime.now()}] {str(msg)}\n')
 
 
 def pos_get_log_lines() -> list:
