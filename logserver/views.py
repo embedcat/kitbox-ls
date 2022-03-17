@@ -13,7 +13,7 @@ from logserver import services
 from django import views
 
 from logserver.models import KitBox
-from logserver import mqtt
+# from logserver import mqtt
 
 logger = logging.getLogger(settings.LOGGER)
 
