@@ -3,7 +3,9 @@ certifi==2021.5.30
 charset-normalizer==2.0.4
 colorama==0.4.4
 Django==4.0.2
+django-crispy-forms==1.14.0
 django-debug-toolbar==3.2.2
+django-environ==0.8.1
 djangorestframework==3.12.4
 flake8==3.9.2
 httpie==2.4.0
