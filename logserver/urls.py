@@ -1,7 +1,9 @@
 from django.urls import path
 
-from logserver.views import LogsView, LogsIdView, LogsDownload, APILog, APIPing, PingView, MainView, APIServer, \
-    LogParseAndDownload, PingStatView, APITestSmall, APITestBig, APIPosTest, PosTestView
+from logserver.views import LogsView, LogsIdView, LogsDownload, PingView, MainView, LogParseAndDownload, PingStatView, \
+    PosTestView, MQTTView, MQTTDeviceView
+
+from logserver.APIviews import APILog, APIPing, APIServer, APITestSmall, APITestBig, APIPosTest
 
 urlpatterns = [
     path('', MainView.as_view(), name='main'),
@@ -12,6 +14,8 @@ urlpatterns = [
     path('ping/', PingView.as_view(), name='ping'),
     path('ping/stat/', PingStatView.as_view(), name='ping_stat'),
     path('pos_test/', PosTestView.as_view(), name='pos_test'),
+    path('mqtt/', MQTTView.as_view(), name='mqtt'),
+    path('mqtt/<int:modem_id>', MQTTDeviceView.as_view(), name='mqtt_device'),
 
     path('api/v0/<int:id>/<int:start>/', APILog.as_view(), name='api_log'),
     path('api/v0/<int:id>/ping/', APIPing.as_view(), name='api_ping'),
