@@ -22,13 +22,13 @@ client = mqtt_client.Client()
 
 
 def _store_message_db(message: mqtt_client.MQTTMessage):
-    modem_id = int(message.topic.split("/")[2])
+    modem_id = int(message.topic.split("/")[1])
     try:
         device = MQTTDevice.objects.get(modem_id=modem_id)
     except (MQTTDevice.DoesNotExist, TypeError):
         logger.error(f"Msg don't stored, because Device with modem_id={modem_id} not found in DB")
         return
-    type = str(message.topic.split("/")[3])
+    type = str(message.topic.split("/")[2])
     event = Event.objects.create(
         device=device,
         type=type,
