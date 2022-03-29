@@ -145,7 +145,7 @@ LOGGING = {
             'format': '%(name)-12s %(levelname)-8s %(message)s'
         },
         'file': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+            'format': '%(asctime)s %(levelname)-8s %(message)s'
         }
     },
     'handlers': {
@@ -164,12 +164,23 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'formatter': 'file',
             'filename': 'EventLogger.log'
+        },
+        'MQTTClientLoggerFile': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': 'MQTTClient.log'
         }
     },
     'loggers': {
         'EventLogger': {
             'level': 'DEBUG',
             'handlers': ['EventLoggerFile'],
+            'propagate': False,
+        },
+        'MQTTClientLogger': {
+            'level': 'INFO',
+            'handlers': ['MQTTClientLoggerFile'],
             'propagate': False,
         },
         '': {
@@ -179,4 +190,8 @@ LOGGING = {
 
     }
 }
-# LOGGING = {}
+
+MQTT_BROKER_IP = env('MQTT_BROKER_IP')
+MQTT_BROKER_PORT = env('MQTT_BROKER_PORT')
+MQTT_BROKER_USERNAME = env('MQTT_BROKER_USERNAME')
+MQTT_BROKER_PASSWORD = env('MQTT_BROKER_PASSWORD')

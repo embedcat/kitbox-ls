@@ -1,0 +1,29 @@
+{% extends 'logserver/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block container %}
+<h4>MQTT devices</h4>
+{% crispy form %}
+
+<table class="table table-sm table-striped table-bordered"
+               data-toggle="table"
+               data-sort-name="num"
+               data-sortable="true"
+               id="dataTable" width="100%">
+    <thead class="table-dark">
+    <tr>
+        <th data-field="num" data-sortable="true" style="width:1%">#</th>
+        <th data-field="name" data-sortable="true">KitBox #</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><a href="{% url 'mqtt_device' item.modem_id %}">#{{ item.modem_id }}</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
