@@ -170,7 +170,16 @@ class MQTTDeviceView(views.View):
         form = MQTTCmdForm(request.POST)
         if form.is_valid():
             cmd = form.cleaned_data['cmd']
-            mqtt_logic.mqtt_publish_cmd(modem_id=modem_id, cmd=int(cmd))
+            publish_filter = form.cleaned_data['publish_filter']
+            logger_filter = form.cleaned_data['logger_filter']
+            payload = ""
+            if cmd == str(mqtt_logic.MqttCmd.publish_filter.value):
+                payload = ";".join(publish_filter) + ";" if len(publish_filter) else ""
+            if cmd == str(mqtt_logic.MqttCmd.logger_start.value):
+                payload = ";".join(logger_filter) + ";" if len(logger_filter) else ""
+            mqtt_logic.mqtt_publish_cmd(modem_id=modem_id,
+                                        cmd=int(cmd),
+                                        payload=payload)
             return redirect('mqtt_device', modem_id)
         return render(
             request=request,

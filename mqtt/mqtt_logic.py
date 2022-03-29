@@ -7,8 +7,8 @@ MQTT_BROKER_AUTH = {"username": f"{settings.MQTT_BROKER_USERNAME}", "password": 
 
 
 class MqttTopic(enum.Enum):
-    event = "kitbox/event"
-    cmd = "kitbox/cmd"
+    event = "event"
+    cmd = "cmd"
 
 
 class MqttEvent(enum.Enum):
@@ -20,17 +20,20 @@ class MqttEvent(enum.Enum):
 
 
 class MqttCmd(enum.Enum):
-    publish_on = 1
-    publish_off = 2
-    logger_clear = 3
-    logger_start = 4
-    logger_stop = 5
-    logger_send = 6
+    publish_filter = 1
+    logger_clear = 2
+    logger_start = 3
+    logger_stop = 4
+    logger_send = 5
+
+
+class MqttLoggerModules(enum.Enum):
+    bus1 = 1
+    bus2 = 2
 
 
 def get_mqtt_events_list() -> list:
     return [
-        (MqttEvent.none.value, "Нет событий"),
         (MqttEvent.info.value, "Информация"),
         (MqttEvent.error.value, "Ошибка"),
         (MqttEvent.sale.value, "Продажа"),
@@ -40,8 +43,7 @@ def get_mqtt_events_list() -> list:
 
 def get_mqtt_cmd_list() -> list:
     return [
-        (MqttCmd.publish_on.value, "Включить публикацию событий"),
-        (MqttCmd.publish_off.value, "Выключить публикацию событий"),
+        (MqttCmd.publish_filter.value, "Включить публикацию событий"),
         (MqttCmd.logger_clear.value, "Логгер: очистка лога"),
         (MqttCmd.logger_start.value, "Логгер: начать запись логов"),
         (MqttCmd.logger_stop.value, "Логгер: остановить запись логов"),
@@ -51,8 +53,13 @@ def get_mqtt_cmd_list() -> list:
 
 def get_mqtt_logger_modules_start() -> list:
     return [
-        (),
+        (MqttLoggerModules.bus1.value, "Шина-1"),
+        (MqttLoggerModules.bus2.value, "Шина-2"),
     ]
+
+
+def get_mqtt_publish_filter_list() -> list:
+    return get_mqtt_events_list()
 
 
 def get_mqtt_event_name(event: int) -> str:
@@ -62,8 +69,8 @@ def get_mqtt_event_name(event: int) -> str:
     return ""
 
 
-def mqtt_publish_cmd(modem_id: int, cmd: int) -> None:
-    publish.single(topic=f"{MqttTopic.cmd.value}/{str(modem_id)}", payload=cmd,
+def mqtt_publish_cmd(modem_id: int, cmd: int, payload: str) -> None:
+    publish.single(topic=f"{MqttTopic.cmd.value}/{str(modem_id)}/{str(cmd)}", payload=payload,
                    hostname=settings.MQTT_BROKER_IP, port=int(settings.MQTT_BROKER_PORT), auth=MQTT_BROKER_AUTH)
 
 
