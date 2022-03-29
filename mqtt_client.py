@@ -47,7 +47,7 @@ def _on_disconnect(client, userdata, rc):
 
 def _on_message(client, userdata, message):
     # print(f"Received: \"{message.topic}\" : \"{message.payload}\"")
-    logger.info(f"Msg received. Topic: <{message.topic}>. Msg: <{message.payload.decode('utf-8')}>")
+    logger.info(f"Msg received. Topic: <{message.topic}>. Msg: <{message.payload}>")
     _store_message_db(message=message)
 
 
