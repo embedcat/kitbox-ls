@@ -1,7 +1,10 @@
 {% extends 'logserver/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block container %}
-<h4>POS test</h4>
+<h4>KitBox</h4>
+{% crispy form %}
+
 <table class="table table-sm table-striped table-bordered"
                data-toggle="table"
                data-sort-name="num"
@@ -10,14 +13,14 @@
     <thead class="table-dark">
     <tr>
         <th data-field="num" data-sortable="true" style="width:1%">#</th>
-        <th data-field="name" data-sortable="true">Log</th>
+        <th data-field="name" data-sortable="true">KitBox #</th>
     </tr>
     </thead>
     <tbody>
     {% for item in items %}
     <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{{ item }}</td>
+        <td>{{ item.modem_id }} ({{ item.log_request }})</td>
     </tr>
     {% endfor %}
     </tbody>

@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from config import settings
 from datetime import datetime
 import os
-from logserver.tlv_parser import parse_tlv_log
 
 
 logger = logging.getLogger(settings.LOGGER)
@@ -80,15 +79,6 @@ def download_file_response(id: int, file: str) -> HttpResponse:
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(path)
             return response
 
-
-def parse_log(id: int, file: str) -> str or None:
-    path = os.path.join(os.getcwd(), settings.KITBOX_LOGS_DIR, str(id), str(file))
-    if "-----" in path:
-        return None
-    if_parsed = path[:-4] + "_parsed.log"
-    if os.path.exists(if_parsed):
-        return if_parsed
-    return parse_tlv_log(path)
 
 
 def _create_dir(dir: str) -> None:

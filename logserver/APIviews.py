@@ -10,6 +10,13 @@ import logging
 
 logger = logging.getLogger(settings.LOGGER)
 
+class APICmd(APIView):
+    @staticmethod
+    def get(request):
+        print(request.data)
+        return Response(data={"Res": True, "Cmd": "0"},
+                        status=status.HTTP_200_OK)
+
 
 class APILog(APIView):
     @staticmethod
